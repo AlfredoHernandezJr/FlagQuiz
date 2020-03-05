@@ -3,11 +3,16 @@ package edu.miracosta.cs134.flagquiz;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.AssetManager;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -25,6 +30,17 @@ import edu.miracosta.cs134.flagquiz.model.Country;
 import edu.miracosta.cs134.flagquiz.model.JSONLoader;
 
 public class MainActivity extends AppCompatActivity {
+
+
+    // Part 2 instance variables.
+    public static final String REGIONS = "pref_regions" ;
+    public static final String CHOICES = "pref_numberOfChoices" ;
+
+    private String mRegion = "All" ;
+
+    private int mChoices = 4 ;
+
+    // Part 1 private instance variables.
 
     private static final String TAG = "Flag Quiz";
 
@@ -182,11 +198,22 @@ public class MainActivity extends AppCompatActivity {
             }
             else
             {
-                // TODO: Nested in this decision, if the user has completed all 10 questions, show an AlertDialog
-                // TODO: with the statistics and an option to Reset Quiz
+                // DONE: Nested in this decision, if the user has completed all 10 questions, show an AlertDialog
+                // DONE: with the statistics and an option to Reset Quiz
                 AlertDialog.Builder builder = new AlertDialog.Builder(this) ;
                 builder.setMessage(getString(R.string.results, mTotalGuesses,
                         (double) mCorrectGuesses / mTotalGuesses)) ;
+
+                builder.setPositiveButton(getString(R.string.reset_quiz), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        resetQuiz() ;
+                    }
+                }) ;
+
+                builder.setCancelable(false) ;
+                builder.create() ;
+                builder.show() ;
             }
         }
         else
@@ -197,5 +224,55 @@ public class MainActivity extends AppCompatActivity {
             mAnswerTextView.setText(getString(R.string.incorrect_answer)) ;
             clickedButton.setEnabled(false) ;
         }
+    }
+
+    /** Flag Quiz 10b code.*/
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_settings, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Intent settingsIntent = new Intent(this, SettingsActivity.class);
+        startActivity(settingsIntent);
+        return super.onOptionsItemSelected(item);
+    }
+
+    SharedPreferences.OnSharedPreferenceChangeListener
+            mSharedPreferenceChangeListener =
+            new SharedPreferences.OnSharedPreferenceChangeListener() {
+                @Override
+                public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
+                                                      String key) {
+                    if (key.equals(REGIONS))
+                    {
+                        String region = sharedPreferences.getString(REGIONS,
+                                getString(R.string.default_region));
+                        updateRegion(region);
+                        resetQuiz();
+                    }
+                    else if (key.equals(CHOICES))
+                    {
+                        mChoices = Integer.parseInt(sharedPreferences.getString(CHOICES,
+                                getString(R.string.default_choices)));
+                        updateChoices(mChoices);
+                        resetQuiz();
+                    }
+                    Toast.makeText(MainActivity.this, R.string.restarting_quiz,
+                            Toast.LENGTH_SHORT).show();
+                }
+            };
+
+    public void updateRegion(String region)
+    {
+        mRegion = region.replaceAll(" ","_");
+
+    }
+    public void updateChoices(int choice)
+    {
+        mChoices = choice;
+
     }
 }
