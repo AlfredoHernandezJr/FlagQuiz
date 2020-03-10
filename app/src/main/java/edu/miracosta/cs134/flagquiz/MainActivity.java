@@ -2,6 +2,7 @@ package edu.miracosta.cs134.flagquiz;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.PreferenceManager;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -46,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static final int FLAGS_IN_QUIZ = 10;
 
-    private Button[] mButtons = new Button[4];
+    private Button[] mButtons = new Button[8];
     private List<Country> mAllCountriesList;  // all the countries loaded from JSON
     private List<Country> mQuizCountriesList; // countries in current quiz (just 10 of them)
     private Country mCorrectCountry; // correct country for the current question
@@ -78,6 +79,11 @@ public class MainActivity extends AppCompatActivity {
         mButtons[1] = findViewById(R.id.button2) ;
         mButtons[2] = findViewById(R.id.button3) ;
         mButtons[3] = findViewById(R.id.button4) ;
+
+        mButtons[4] = findViewById(R.id.button5) ;
+        mButtons[5] = findViewById(R.id.button6) ;
+        mButtons[6] = findViewById(R.id.button7) ;
+        mButtons[7] = findViewById(R.id.button8) ;
         // DONE: Set mQuestionNumberTextView's text to the appropriate strings.xml resource
         mQuestionNumberTextView.setText(getString(R.string.question, 1, FLAGS_IN_QUIZ)) ;
         // DONE: Load all the countries from the JSON file using the JSONLoader
@@ -86,6 +92,9 @@ public class MainActivity extends AppCompatActivity {
         } catch (IOException e) {
             Log.e(TAG, "Error loading from JSON", e) ;
         }
+
+        PreferenceManager.getDefaultSharedPreferences(this).registerOnSharedPreferenceChangeListener(mSharedPreferenceChangeListener) ;
+
         // DONE: Call the method resetQuiz() to start the quiz.
         resetQuiz() ;
     }
@@ -108,11 +117,12 @@ public class MainActivity extends AppCompatActivity {
         {
             random = mAllCountriesList.get(rng.nextInt(mAllCountriesList.size())) ;
 
-            if(!mQuizCountriesList.contains(random))
+            if(!mQuizCountriesList.contains(random) && (random.getRegion().equalsIgnoreCase(mRegion) || mRegion.equalsIgnoreCase("All")))
             {
                 mQuizCountriesList.add(random) ;
             }
         }
+
         // DONE: Ensure no duplicate countries (e.g. don't add a country if it's already in mQuizCountriesList)
         // DONE: Start the quiz by calling loadNextFlag
         loadNextFlag() ;
@@ -152,13 +162,16 @@ public class MainActivity extends AppCompatActivity {
         Collections.shuffle(mAllCountriesList) ;
         // DONE: Loop through all 4 buttons, enable them all and set them to the first 4 countries
         // DONE: in the all countries list
-        for (int i = 0; i < mButtons.length; i++) {
+        for (int i = 0; i < mChoices; i++) {
             mButtons[i].setEnabled(true) ;
+            mButtons[i].setVisibility(View.VISIBLE);
             mButtons[i].setText(mAllCountriesList.get(i).getName()) ;
         }
 
+        updateChoices(mChoices);
+
         // DONE: After the loop, randomly replace one of the 4 buttons with the name of the correct country
-        mButtons[rng.nextInt(mButtons.length)].setText(mCorrectCountry.getName()) ;
+        mButtons[rng.nextInt(mChoices)].setText(mCorrectCountry.getName()) ;
     }
 
     /**
@@ -180,11 +193,6 @@ public class MainActivity extends AppCompatActivity {
         if(guess.equals(mCorrectCountry.getName()))
         {
             mCorrectGuesses++ ;
-            for (int i = 0; i < mButtons.length; i++) {
-                mButtons[i].setEnabled(false) ;
-            }
-            mAnswerTextView.setTextColor(getResources().getColor(R.color.correct_answer)) ;
-            mAnswerTextView.setText(mCorrectCountry.getName()) ;
 
             if(mCorrectGuesses < FLAGS_IN_QUIZ)
             {
@@ -274,5 +282,9 @@ public class MainActivity extends AppCompatActivity {
     {
         mChoices = choice;
 
+        for(int i = 7 ; i > mChoices-1 ; i--)
+        {
+            mButtons[i].setVisibility(View.INVISIBLE);
+        }
     }
 }

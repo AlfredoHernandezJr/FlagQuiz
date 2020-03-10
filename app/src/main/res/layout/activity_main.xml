@@ -64,13 +64,6 @@
             android:lines="2"
             android:onClick="makeGuess"
             android:text="New Button" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/row2LinearLayout">
 
         <Button
             android:id="@+id/button3"
@@ -89,8 +82,55 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:lines="2"
-            android:text="New Button"
-            android:onClick="makeGuess" />
+            android:onClick="makeGuess"
+            android:text="New Button" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/row2LinearLayout">
+
+        <Button
+            android:id="@+id/button5"
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:lines="2"
+            android:onClick="makeGuess"
+            android:text="New Button" />
+
+        <Button
+            android:id="@+id/button6"
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:onClick="makeGuess"
+            android:text="New Button" />
+
+        <Button
+            android:id="@+id/button7"
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:lines="2"
+            android:onClick="makeGuess"
+            android:text="New Button" />
+
+        <Button
+            android:id="@+id/button8"
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:lines="2"
+            android:onClick="makeGuess"
+            android:text="New Button" />
     </LinearLayout>
 
 
