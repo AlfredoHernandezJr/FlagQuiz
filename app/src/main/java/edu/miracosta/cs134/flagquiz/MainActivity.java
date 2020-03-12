@@ -194,6 +194,14 @@ public class MainActivity extends AppCompatActivity {
         {
             mCorrectGuesses++ ;
 
+            for(int i = 0; i < mChoices; i++)
+            {
+                mButtons[i].setEnabled(false);
+            }
+
+            mAnswerTextView.setTextColor(getResources().getColor(R.color.correct_answer)) ;
+            mAnswerTextView.setText(guess) ;
+
             if(mCorrectGuesses < FLAGS_IN_QUIZ)
             {
                 // Code a delay 2000ms = 2 seconds using a handler to load the next flag.
@@ -210,7 +218,7 @@ public class MainActivity extends AppCompatActivity {
                 // DONE: with the statistics and an option to Reset Quiz
                 AlertDialog.Builder builder = new AlertDialog.Builder(this) ;
                 builder.setMessage(getString(R.string.results, mTotalGuesses,
-                        (double) mCorrectGuesses / mTotalGuesses)) ;
+                        10.0 * mCorrectGuesses / mTotalGuesses)) ;
 
                 builder.setPositiveButton(getString(R.string.reset_quiz), new DialogInterface.OnClickListener() {
                     @Override
@@ -275,8 +283,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void updateRegion(String region)
     {
-        mRegion = region.replaceAll(" ","_");
-
+        mRegion = region.replaceAll("_"," ");
     }
     public void updateChoices(int choice)
     {
